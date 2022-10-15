@@ -1,9 +1,11 @@
 const http         = require('http');
+const url = require('url');
 const Router       = require('router');
-var compression  = require('compression');
+const compression  = require('compression');
 const finalhandler = require('finalhandler')
 const bodyParser   = require('body-parser');
 const multer  = require('multer');
+
 const storage = multer.diskStorage({   
   destination: function(req, file, cb) { 
      cb(null, './files');    
@@ -13,6 +15,7 @@ const storage = multer.diskStorage({
     cb(null, `${file.fieldname}-${Date.now()}.${ext}`);
   }
 });
+
 const formdata = multer({
   storage: storage,
   limits : {fileSize : 10000000},
@@ -32,7 +35,7 @@ const formdata = multer({
   }
 });
 
-exports.routeropt = {mergeParams: true};
+exports.routeopt = {mergeParams: true};
 
 exports.routeconn = (routeopt,routearr)=>{
 
@@ -63,5 +66,11 @@ exports.routeconn = (routeopt,routearr)=>{
     });
     
     server.listen(3000);
+
+};
+
+exports.routequery = (req)=>{
+
+  return url.parse(req.url, true);
 
 };

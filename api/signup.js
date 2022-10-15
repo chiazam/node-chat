@@ -1,4 +1,4 @@
-
+routemod = require('../class/routehandler.js');
 
 const signupfunc = (req, res) => {
 
@@ -7,6 +7,8 @@ const signupfunc = (req, res) => {
     // console.log(req.body);
     // console.log(req.params);
 
+    req.params = routemod.routequery(req).query;
+
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify([req.body,req.params,req.files]));
 
@@ -14,7 +16,7 @@ const signupfunc = (req, res) => {
 
 exports.signuproute = {
     method:'post',
-    path:"/api/signup",
+    path:"/api/signup/",
     func:signupfunc,
     uploads:{
         name:"pix",

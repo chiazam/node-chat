@@ -1,6 +1,7 @@
 const passhash = require('password-hash');
 const routemod = require('../class/routehandler.js');
 const filemod = require('../class/filehandler.js');
+const mysqlmod = require('../class/mysqlhandler');
 
 const signupnow = (body, files) => {
 
@@ -24,11 +25,40 @@ const signupnow = (body, files) => {
 
         } else {
 
-            // passwordHash.verify('password123', hashedPassword)
+            // passwordHash.verify(body.pass, hashedPassword)
 
-            var hash = passhash.generate('password123');
+            let conn = mysqlmod.mysqlconn();
 
-            return { succ: "", hash: hash };
+            var hash = passhash.generate(body.pass);
+
+            conn.connect((err => {
+
+                if (err) {
+
+                    console.error('error connecting: ' + err.stack);
+                    return;
+
+                }
+
+                console.log('connected as id ' + conn.threadId);
+
+            }));
+
+            conn.query('INSERT INTO user SET ?', {
+
+                name: body.name,
+                user: body.user,
+                pass: hash,
+                pix: files[0].path
+
+            }, (error, results, fields) => {
+                if (error) throw error;
+                console.log(results.insertId);
+            });
+
+            conn.end((err => {}));
+
+            return { succ: "Account Created Successfully" };
 
         }
 

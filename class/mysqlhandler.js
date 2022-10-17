@@ -1,18 +1,25 @@
 const mysql = require('mysql2');
 
-mysqlopt={
+mysqlopt = {
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'nodechat',
-    port:3306,
+    port: 3306,
     multipleStatements: true
 };
 
-exports.mysqlconn = ()=>{
+exports.mysqlconn = () => {
 
-    let mysqlConn = mysql.createConnection(mysqlopt);
-
-    return mysqlConn;
+    return mysql.createConnection(mysqlopt);
 
 };
+
+// function(err) {
+//     if (err) {
+//       console.error('error connecting: ' + err.stack);
+//       return;
+//     }
+
+//     console.log('connected as id ' + connection.threadId);
+//   }

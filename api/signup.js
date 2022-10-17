@@ -1,8 +1,10 @@
-routemod = require('../class/routehandler.js');
+const passhash = require('password-hash');
+const routemod = require('../class/routehandler.js');
+const filemod = require('../class/filehandler.js');
 
 const signupnow = (body, files) => {
 
-    if (body.hasOwnproperty('name') && body.hasOwnproperty('user') && body.hasOwnproperty('pass')) {
+    if (body.name != undefined && body.user != undefined && body.pass != undefined) {
 
         if (body.name.length === 0) {
 
@@ -21,6 +23,12 @@ const signupnow = (body, files) => {
             return { err: "Input your Picture!" };
 
         } else {
+
+            // passwordHash.verify('password123', hashedPassword)
+
+            var hash = passhash.generate('password123');
+
+            return { succ: "", hash: hash };
 
         }
 
@@ -42,6 +50,18 @@ const signupfunc = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
     let api = signupnow(req.body, req.files);
+
+    if (api.err != undefined) {
+
+        for (let i = 0; i < req.files.length; i++) {
+
+            const filenow = req.files[i];
+
+            filemod.filehandledel(filenow.path);
+
+        }
+
+    }
 
     res.end(JSON.stringify({
         api: api,

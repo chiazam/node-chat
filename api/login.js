@@ -35,19 +35,25 @@ const loginnow = (body) => {
 
             let userresult = {};
 
-            conn.query('SELECT * FROM user WHERE user = ?', [body.user], (error, results, fields) => {
+            (() => {
 
-                if (error) {
+                return new Promise((resolve, reject) => {
 
-                    throw error
+                    conn.query('SELECT * FROM _users WHERE _user = ?', [body.user], (err, results, fields) => {
 
-                };
+                        if (rows === undefined) {
+                            reject(new Error("Error rows is undefined"));
+                        } else {
+                            resolve(results);
+                        }
 
-                userresult = results;
+                    });
 
-            });
+                })
 
-            conn.end((err => {}));
+            })()
+
+
 
             return { succ: "Login Successfully", user: userresult };
 

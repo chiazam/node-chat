@@ -44,12 +44,12 @@ const signupnow = (body, files) => {
 
             }));
 
-            conn.query('INSERT INTO user SET ?', {
+            conn.query('INSERT INTO _users SET ?', {
 
-                name: body.name,
-                user: body.user,
-                pass: hash,
-                pix: files[0].path
+                _name: body.name,
+                _user: body.user,
+                _pass: hash,
+                _pix: files[0].path
 
             }, (error, results, fields) => {
                 if (error) throw error;

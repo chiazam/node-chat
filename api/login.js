@@ -35,13 +35,19 @@ const loginnow = (body) => {
 
             let userresult = {};
 
+            let succ_err = false;
+
             (() => {
 
                 return new Promise((resolve, reject) => {
 
                     conn.query('SELECT * FROM _users WHERE _user = ?', [body.user], (err, results, fields) => {
 
-                        if (rows === undefined) {
+                        if (err) {
+
+                            reject(new Error(err));
+
+                        } else if (results === undefined) {
                             reject(new Error("Error rows is undefined"));
                         } else {
                             resolve(results);
@@ -51,9 +57,25 @@ const loginnow = (body) => {
 
                 })
 
-            })()
+            })().then((results) => {
 
+                userresult = results;
 
+                succ_err = true;
+
+            }).catch((err) => {
+                console.log("Promise rejection error: " + err);
+            })
+
+            if (succ_err) {
+
+                return { succ: "Login Successfully", user: userresult };
+
+            } else {
+
+                return { err: "Login failed, try again later..." };
+
+            }
 
             return { succ: "Login Successfully", user: userresult };
 

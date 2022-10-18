@@ -65,29 +65,31 @@ const loginnow = (body) => {
 
             });
 
-            let userresult = undefined;
-
-            let succ_err = true;
+            let usersql = {};
 
             rendlogtoapi = (results) => {
 
                 console.log(results);
 
+
+
                 if (results != false) {
 
-                    userresult = results;
+                    usersql.user_result = results;
+
+                    usersql.succ_err = true;
 
                 } else {
 
-                    succ_err = false;
+                    usersql.succ_err = false;
 
                 }
 
             };
 
-            if (succ_err == true) {
+            if (usersql.succ_err == true) {
 
-                return { succ: "Login Successful!", login: userresult };
+                return { succ: "Login Successful!", login: usersql.user_result };
 
             } else {
 

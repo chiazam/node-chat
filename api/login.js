@@ -55,37 +55,33 @@ const loginnow = (body) => {
 
             });
 
-            get_user().then((results) => {
-
-                rendlogtoapi(results);
-
-            }).catch((err) => {
-
-                rendlogtoapi(false);
-
-            });
-
-            let usersql = {};
-
-            rendlogtoapi = (results) => {
+            let rendlogtoapi = (results) => {
 
                 console.log(results);
 
-
-
                 if (results != false) {
 
-                    usersql.user_result = results;
-
-                    usersql.succ_err = true;
+                    return { user_result: results, succ_err: true };
 
                 } else {
 
-                    usersql.succ_err = false;
+                    return { succ_err: false };
 
                 }
 
             };
+
+            let usersql = {};
+
+            get_user().then((results) => {
+
+                usersql = rendlogtoapi(results);
+
+            }).catch((err) => {
+
+                usersql = rendlogtoapi(false);
+
+            });
 
             if (usersql.succ_err == true) {
 

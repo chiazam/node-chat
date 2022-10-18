@@ -36,7 +36,7 @@ const loginnow = (body) => {
             let userresult = undefined;
             let succ_err = true;
 
-            ((() => {
+            let get_user = (() => {
 
                 return new Promise((resolve, reject) => {
 
@@ -56,7 +56,9 @@ const loginnow = (body) => {
 
                 });
 
-            })()).then((results) => {
+            });
+
+            get_user().then((results) => {
 
                 console.log(results);
 
@@ -72,7 +74,7 @@ const loginnow = (body) => {
 
             if (succ_err == true) {
 
-                return { succ: "Login Successful", login: userresult };
+                return { succ: "Login Successful!", login: userresult };
 
             } else {
 

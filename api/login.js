@@ -33,11 +33,10 @@ const loginnow = (body) => {
 
             }));
 
-            let userresult = {};
+            let userresult = undefined;
+            let succ_err = true;
 
-            let succ_err = false;
-
-            (() => {
+            ((() => {
 
                 return new Promise((resolve, reject) => {
 
@@ -47,37 +46,39 @@ const loginnow = (body) => {
 
                             reject(new Error(err));
 
-                        } else if (results === undefined) {
-                            reject(new Error("Error rows is undefined"));
                         } else {
+
                             resolve(results);
+
                         }
 
                     });
 
-                })
+                });
 
-            })().then((results) => {
+            })()).then((results) => {
+
+                console.log(results);
 
                 userresult = results;
 
-                succ_err = true;
-
             }).catch((err) => {
+
+                succ_err = false;
+
                 console.log("Promise rejection error: " + err);
-            })
 
-            if (succ_err) {
+            });
 
-                return { succ: "Login Successfully", user: userresult };
+            if (succ_err == true) {
+
+                return { succ: "Login Successful", login: userresult };
 
             } else {
 
                 return { err: "Login failed, try again later..." };
 
             }
-
-            return { succ: "Login Successfully", user: userresult };
 
         }
 

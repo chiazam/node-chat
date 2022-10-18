@@ -33,9 +33,6 @@ const loginnow = (body) => {
 
             }));
 
-            let userresult = undefined;
-            let succ_err = true;
-
             let get_user = (() => {
 
                 return new Promise((resolve, reject) => {
@@ -60,17 +57,33 @@ const loginnow = (body) => {
 
             get_user().then((results) => {
 
-                console.log(results);
-
-                userresult = results;
+                rendlogtoapi(results);
 
             }).catch((err) => {
 
-                succ_err = false;
-
-                console.log("Promise rejection error: " + err);
+                rendlogtoapi(false);
 
             });
+
+            let userresult = undefined;
+
+            let succ_err = true;
+
+            rendlogtoapi = (results) => {
+
+                console.log(results);
+
+                if (results != false) {
+
+                    userresult = results;
+
+                } else {
+
+                    succ_err = false;
+
+                }
+
+            };
 
             if (succ_err == true) {
 

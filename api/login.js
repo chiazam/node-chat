@@ -71,27 +71,43 @@ const loginnow = (body) => {
 
             };
 
-            let usersql = {};
+            // let usersql = {};
 
-            get_user().then((results) => {
+            let foldusersql = (usersql) => {
 
-                usersql = rendlogtoapi(results);
+                if (usersql.succ_err == true) {
 
-            }).catch((err) => {
+                    return { succ: "Login Successful!", login: usersql.user_result };
 
-                usersql = rendlogtoapi(false);
+                } else {
 
-            });
+                    return { err: "Login failed, try again later..." };
 
-            if (usersql.succ_err == true) {
+                }
 
-                return { succ: "Login Successful!", login: usersql.user_result };
+            };
 
-            } else {
+            return foldusersql(rendlogtoapi(get_user()));
 
-                return { err: "Login failed, try again later..." };
+            // .then((results) => {
 
-            }
+            //     usersql = rendlogtoapi(results);
+
+            // }).catch((err) => {
+
+            //     usersql = rendlogtoapi(false);
+
+            // // });
+
+            // if (usersql.succ_err == true) {
+
+            //     return { succ: "Login Successful!", login: usersql.user_result };
+
+            // } else {
+
+            //     return { err: "Login failed, try again later..." };
+
+            // }
 
         }
 

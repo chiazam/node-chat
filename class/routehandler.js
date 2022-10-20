@@ -37,7 +37,7 @@ const formdata = multer({
 
 exports.routeopt = { mergeParams: true };
 
-exports.routeconn = (routeopt, routearr) => {
+exports.routeconn = async function(routeopt, routearr) {
 
     let router = Router(routeopt);
 

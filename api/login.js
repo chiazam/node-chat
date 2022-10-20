@@ -2,7 +2,7 @@ const passhash = require('password-hash');
 // const routemod = require('../class/routehandler.js');
 const mysqlmod = require('../class/mysqlhandler');
 
-const loginnow = (body) => {
+const loginnow = async function(body) {
 
     if (body.user != undefined && body.pass != undefined) {
 
@@ -35,13 +35,13 @@ const loginnow = (body) => {
 
             let get_user = (() => {
 
-                return new Promise((resolve, reject) => {
+                return new Promise(((resolve, reject) => {
 
                     conn.query('SELECT * FROM _users WHERE _user = ?', [body.user], (err, results, fields) => {
 
                         if (err) {
 
-                            reject(new Error(err));
+                            reject(false);
 
                         } else {
 
@@ -51,63 +51,90 @@ const loginnow = (body) => {
 
                     });
 
-                });
+                }));
 
             });
 
             let rendlogtoapi = (results) => {
 
-                console.log(results);
+                return new Promise(((resolve, reject) => {
 
-                if (results != false) {
+                    if (results != false) {
 
-                    return { user_result: results, succ_err: true };
+                        resolve({ user_result: results, succ_err: true });
 
-                } else {
+                    } else {
 
-                    return { succ_err: false };
+                        reject(false);
 
-                }
+                    }
+                }));
 
             };
-
-            // let usersql = {};
 
             let foldusersql = (usersql) => {
 
-                if (usersql.succ_err == true) {
+                return new Promise(((resolve, reject) => {
 
-                    return { succ: "Login Successful!", login: usersql.user_result };
+                    if (usersql != false) {
 
-                } else {
+                        resolve({ succ: "Login Successful!", login: usersql.user_result });
 
-                    return { err: "Login failed, try again later..." };
+                    } else {
 
-                }
+                        reject(false);
+
+                    }
+
+                }));
 
             };
 
-            return foldusersql(rendlogtoapi(get_user()));
+            let finalenroll = (logininfo) => {
 
-            // .then((results) => {
+                return new Promise(((resolve, reject) => {
 
-            //     usersql = rendlogtoapi(results);
+                    console.log(logininfo != false);
 
-            // }).catch((err) => {
+                    if (logininfo != false) {
 
-            //     usersql = rendlogtoapi(false);
+                        console.log(passhash.verify(body.pass, logininfo.login[0]._pass), body.pass, logininfo.login._pass);
 
-            // // });
+                        if (passhash.verify(body.pass, logininfo.login[0]._pass)) {
 
-            // if (usersql.succ_err == true) {
+                            logininfo.login[0]._pass = undefined;
 
-            //     return { succ: "Login Successful!", login: usersql.user_result };
+                            resolve(logininfo);
 
-            // } else {
+                        } else {
 
-            //     return { err: "Login failed, try again later..." };
+                            resolve({ err: "Login failed, incorrect Password..." });
 
-            // }
+                        }
+
+                    }
+
+                    // else {
+
+
+
+                    // }
+
+                }));
+
+            }
+
+            try {
+
+                return await finalenroll(await foldusersql(await rendlogtoapi(await get_user())));
+
+            } catch (error) {
+
+                console.log(error);
+
+                return { err: "Login failed, incorrect Username..." };
+
+            }
 
         }
 
@@ -119,7 +146,7 @@ const loginnow = (body) => {
 
 };
 
-const loginfunc = (req, res) => {
+const loginfunc = async function(req, res) {
 
     // res.statusCode = 200;
     // console.log(req.body);
@@ -128,7 +155,7 @@ const loginfunc = (req, res) => {
 
     res.setHeader('Content-Type', 'application/json');
 
-    let api = loginnow(req.body);
+    let api = await loginnow(req.body);
 
     res.end(JSON.stringify({
         api: api,

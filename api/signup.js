@@ -1,7 +1,7 @@
 const passhash = require('password-hash');
 const routemod = require('../class/routehandler.js');
 const filemod = require('../class/filehandler.js');
-const mysqlmod = require('../class/mysqlhandler');
+const mysqlmod = require('../class/mysqlhandler.js');
 
 const signupnow = (body, files) => {
 

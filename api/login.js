@@ -1,6 +1,50 @@
 const passhash = require('password-hash');
 // const routemod = require('../class/routehandler.js');
-const mysqlmod = require('../class/mysqlhandler');
+const mysqlmod = require('../class/mysqlhandler.js');
+const base64mod = require('../class/base64.js');
+
+let get_user = ((user, conn) => {
+
+    return new Promise(((resolve, reject) => {
+
+        conn.query('SELECT * FROM _users WHERE _user = ?', [user], (err, results, fields) => {
+
+            if (err) {
+
+                reject(false);
+
+            } else {
+
+                resolve(results);
+
+            }
+
+        });
+
+    }));
+
+});
+
+exports.get_user;
+
+let rendlogtoapi = (results => {
+
+    return new Promise(((resolve, reject) => {
+
+        if (results != false) {
+
+            resolve({ user_result: results, succ_err: true });
+
+        } else {
+
+            reject(false);
+
+        }
+    }));
+
+});
+
+exports.rendlogtoapi;
 
 const loginnow = async function(body) {
 
@@ -33,52 +77,17 @@ const loginnow = async function(body) {
 
             }));
 
-            let get_user = (() => {
-
-                return new Promise(((resolve, reject) => {
-
-                    conn.query('SELECT * FROM _users WHERE _user = ?', [body.user], (err, results, fields) => {
-
-                        if (err) {
-
-                            reject(false);
-
-                        } else {
-
-                            resolve(results);
-
-                        }
-
-                    });
-
-                }));
-
-            });
-
-            let rendlogtoapi = (results) => {
-
-                return new Promise(((resolve, reject) => {
-
-                    if (results != false) {
-
-                        resolve({ user_result: results, succ_err: true });
-
-                    } else {
-
-                        reject(false);
-
-                    }
-                }));
-
-            };
-
             let foldusersql = (usersql) => {
 
                 return new Promise(((resolve, reject) => {
 
                     if (usersql != false) {
 
-                        resolve({ succ: "Login Successful!", login: usersql.user_result });
+                        console.log(usersql.user_result);
+
+                        let logid = base64mod.tobase64("" + usersql.user_result[0]._uder);
+
+                        resolve({ succ: "Login Successful!", logid: logid, login: usersql.user_result });
 
                     } else {
 
@@ -114,19 +123,13 @@ const loginnow = async function(body) {
 
                     }
 
-                    // else {
-
-
-
-                    // }
-
                 }));
 
             }
 
             try {
 
-                return await finalenroll(await foldusersql(await rendlogtoapi(await get_user())));
+                return await finalenroll(await foldusersql(await rendlogtoapi(await get_user(body.user, conn))));
 
             } catch (error) {
 

@@ -2,6 +2,7 @@ const passhash = require('password-hash');
 const routemod = require('../class/routehandler.js');
 const filemod = require('../class/filehandler.js');
 const mysqlmod = require('../class/mysqlhandler.js');
+const timemod = require('../class/timehandler.js');
 
 const signupnow = (body, files) => {
 
@@ -49,7 +50,8 @@ const signupnow = (body, files) => {
                 _name: body.name,
                 _user: body.user,
                 _pass: hash,
-                _pix: files[0].path
+                _pix: files[0].path,
+                _date: timemod.now()
 
             }, (error, results, fields) => {
                 if (error) throw error;

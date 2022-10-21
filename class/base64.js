@@ -1,11 +1,11 @@
-exports.tobase64 = (word) => {
+exports.tobase64 = (word => {
 
-    return ((new Buffer.from(word)).toString('base64'));
+    return ((Buffer.from(word, 'utf8')).toString('base64'));
 
-};
+});
 
-exports.frombase64 = (string) => {
+exports.frombase64 = (str => {
 
-    return ((new Buffer.from(string, 'base64')).toString('ascii'));
+    return ((Buffer.from(str, 'base64')).toString('utf8'));
 
-};
+});

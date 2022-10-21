@@ -85,7 +85,7 @@ const loginnow = async function(body) {
 
                         console.log(usersql.user_result);
 
-                        let logid = base64mod.tobase64("" + usersql.user_result[0]._uder);
+                        let logid = base64mod.tobase64(usersql.user_result[0]._user);
 
                         resolve({ succ: "Login Successful!", logid: logid, login: usersql.user_result });
 

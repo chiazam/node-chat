@@ -17,14 +17,14 @@
 CREATE DATABASE IF NOT EXISTS `nodechat` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `nodechat`;
 
--- Dumping structure for table nodechat.chats
-CREATE TABLE IF NOT EXISTS `chats` (
+-- Dumping structure for table nodechat._chats
+CREATE TABLE IF NOT EXISTS `_chats` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `word` longtext NOT NULL,
-  `file` longtext,
-  `time` datetime NOT NULL,
-  `senduser` longtext NOT NULL,
-  `recieveuser` longtext NOT NULL,
+  `_word` longtext NOT NULL,
+  `_file` longtext,
+  `_senduser` longtext NOT NULL,
+  `_recieveuser` longtext NOT NULL,
+  `_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -37,8 +37,9 @@ CREATE TABLE IF NOT EXISTS `_users` (
   `_user` longtext NOT NULL,
   `_pass` longtext NOT NULL,
   `_pix` longtext NOT NULL,
+  `_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 

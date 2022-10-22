@@ -4,7 +4,7 @@ const filemod = require('../class/filehandler.js');
 const mysqlmod = require('../class/mysqlhandler.js');
 const timemod = require('../class/timehandler.js');
 
-const signupnow = (body, files) => {
+const signupnow = async function(body, files) {
 
     if (body.name != undefined && body.user != undefined && body.pass != undefined) {
 
@@ -45,7 +45,7 @@ const signupnow = (body, files) => {
 
             }));
 
-            conn.query('INSERT INTO _users SET ?', {
+            let signup = await mysqlmod.mysqlquery('INSERT INTO _users SET ?', {
 
                 _name: body.name,
                 _user: body.user,
@@ -53,14 +53,19 @@ const signupnow = (body, files) => {
                 _pix: files[0].path,
                 _date: timemod.now()
 
-            }, (error, results, fields) => {
-                if (error) throw error;
-                console.log(results.insertId);
-            });
+            }, conn);
 
             conn.end((err => {}));
 
-            return { succ: "Account Created Successfully" };
+            if (signup != false) {
+
+                return { succ: "Account Created Successfully!" };
+
+            } else {
+
+                return { err: "Sign up failed, try again!" };
+
+            }
 
         }
 
@@ -72,16 +77,12 @@ const signupnow = (body, files) => {
 
 };
 
-const signupfunc = (req, res) => {
-
-    // res.statusCode = 200;
-    // console.log(req.body);
-    // console.log(req.params);
+const signupfunc = async function(req, res) {
 
     req.params = routemod.routequery(req).query;
     res.setHeader('Content-Type', 'application/json');
 
-    let api = signupnow(req.body, req.files);
+    let api = await signupnow(req.body, req.files);
 
     if (api.err != undefined) {
 

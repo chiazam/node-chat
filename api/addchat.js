@@ -2,6 +2,7 @@ const routemod = require('../class/routehandler.js');
 const filemod = require('../class/filehandler.js');
 const base64mod = require('../class/base64.js');
 const mysqlmod = require('../class/mysqlhandler.js');
+const timemod = require('../class/timehandler.js');
 
 let addchatnow = async function(body, files) {
 
@@ -29,19 +30,56 @@ let addchatnow = async function(body, files) {
 
         }
 
-        return { err: user };
+        let conn = mysqlmod.mysqlconn();
 
-        // try {
+        conn.connect((err => {
 
+            if (err) {
 
+                console.error('error connecting: ' + err.stack);
+                return;
 
-        // } catch (error) {
+            }
 
-        //     console.log(error);
+            console.log('connected as id ' + conn.threadId);
 
-        //     return { err: "Chat not sent!" };
+        }));
 
-        // }
+        let file = (files.length === 0) ? ('') : (files[0].path);
+
+        let word = (body.message.length === 0) ? ('') : (body.message);
+
+        let chatsave = await mysqlmod.mysqlquery('INSERT INTO _chats SET ?', {
+
+            _word: word,
+            _file: file,
+            _senduser: user,
+            _recieveuser: body.recip,
+            _date: timemod.now()
+
+        }, conn);
+
+        if (chatsave == false) {
+
+            return { err: "Message not sent, try again!" };
+
+        }
+
+        try {
+
+            let message = (await mysqlmod.mysqlquery('SELECT * FROM _chats WHERE id = ?', [chatsave.result.insertId], conn)).result;
+
+            conn.end((err => {}));
+
+            return { succ: "Message sent successfully!", message: message };
+
+        } catch (error) {
+
+            console.log(error);
+
+            return { err: "Message not sent, try again!" };
+
+        }
 
     } else {
 
@@ -52,10 +90,6 @@ let addchatnow = async function(body, files) {
 };
 
 const addchatfunc = async function(req, res) {
-
-    // res.statusCode = 200;
-    // console.log(req.body);
-    // console.log(req.params);
 
     req.params = routemod.routequery(req).query;
     res.setHeader('Content-Type', 'application/json');

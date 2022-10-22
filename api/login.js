@@ -1,31 +1,6 @@
 const passhash = require('password-hash');
-// const routemod = require('../class/routehandler.js');
 const mysqlmod = require('../class/mysqlhandler.js');
 const base64mod = require('../class/base64.js');
-
-let get_user = ((user, conn) => {
-
-    return new Promise(((resolve, reject) => {
-
-        conn.query('SELECT * FROM _users WHERE _user = ?', [user], (err, results, fields) => {
-
-            if (err) {
-
-                reject(false);
-
-            } else {
-
-                resolve(results);
-
-            }
-
-        });
-
-    }));
-
-});
-
-exports.get_user;
 
 let rendlogtoapi = (results => {
 
@@ -59,8 +34,6 @@ const loginnow = async function(body) {
             return { err: "Input your Password!" };
 
         } else {
-
-            // passwordHash.verify(body.pass, hashedPassword)
 
             let conn = mysqlmod.mysqlconn();
 
@@ -117,7 +90,7 @@ const loginnow = async function(body) {
 
                         } else {
 
-                            resolve({ err: "Login failed, incorrect Password..." });
+                            resolve({ err: "Login failed!, incorrect Password..." });
 
                         }
 
@@ -129,13 +102,17 @@ const loginnow = async function(body) {
 
             try {
 
-                return await finalenroll(await foldusersql(await rendlogtoapi(await get_user(body.user, conn))));
+                let login = (await mysqlmod.mysqlquery('SELECT * FROM _users WHERE _user = ?', [body.user], conn)).result;
+
+                conn.end((err => {}));
+
+                return await finalenroll(await foldusersql(await rendlogtoapi(login)));
 
             } catch (error) {
 
                 console.log(error);
 
-                return { err: "Login failed, incorrect Username..." };
+                return { err: "Login failed!, incorrect Username..." };
 
             }
 

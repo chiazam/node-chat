@@ -1,3 +1,4 @@
+const routemod = require('../class/routehandler.js');
 const passhash = require('password-hash');
 const mysqlmod = require('../class/mysqlhandler.js');
 const base64mod = require('../class/base64.js');
@@ -131,8 +132,8 @@ const loginfunc = async function(req, res) {
     // res.statusCode = 200;
     // console.log(req.body);
     // console.log(req.params);
-    // req.params = routemod.routequery(req).query;
 
+    req.params = routemod.routequery(req).query;
     res.setHeader('Content-Type', 'application/json');
 
     let api = await loginnow(req.body);

@@ -76,7 +76,7 @@ exports.routeconn = async function(routeopt, routearr) {
 
     // Socket setup
 
-    server.listen(3000);
+    server.listen(3001);
 
 };
 
